@@ -14,8 +14,10 @@ class PowerUpManager:
             if self.when_appears == points:
                 self.when_appears = random.randint(self.when_appears + 200, self.when_appears + 300)
                 self.power_ups.append(Shield())
+   # else: 
+        # self.power_ups.append(Hammer())
 
-        if len(self.power_ups) == 0:
+        if len(self.power_ups) == 1:
             if self.when_appears == points:
                 self.when_appears = random.randint(self.when_appears + 300, self.when_appears + 400)
                 self.power_ups.append(Hammer())

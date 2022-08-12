@@ -1,8 +1,11 @@
 import random
 from xml.dom.expatbuilder import ElementInfo
 import pygame
+
+from ...utils.text_utils import FONT_STYLE
+from .bird import Bird
 from dino_runner.components.obstacles.cactus import  Cactus, Large_Cactus
-from dino_runner.utils.constants import LARGE_CACTUS, SMALL_CACTUS
+from dino_runner.utils.constants import LARGE_CACTUS, SMALL_CACTUS, BIRD
 
 class ObstcacleManager:
     def __init__(self):
@@ -19,6 +22,9 @@ class ObstcacleManager:
                 
             else:
              self.obstacles.append(Large_Cactus(LARGE_CACTUS))
+
+            #else:
+            #self.obstacles.append(Bird(BIRD))
 
 
         for obstacle in self.obstacles:

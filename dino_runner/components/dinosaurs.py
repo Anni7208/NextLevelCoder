@@ -101,7 +101,7 @@ class Dinosaurs(Sprite):
         self.dino_rect.y = self.Y_POS_DUCK
         self.step_index += 1
 
-    def check_invencibility(self):
+    def check_invencibility(self,screen):
         if self.shield:
             time_to_show = round(self.shield_time_up - pygame.time.get_ticks() // 1000, 2)
             if time_to_show >= 0 and self.show_text:
@@ -111,7 +111,7 @@ class Dinosaurs(Sprite):
             self.shield = False
             self.type = DEFAULT_TYPE
 
-    def check_power(self):
+    def check_power(self,screen):
         if self.hammer:
             time_to_show = round(self.hammer_time_up - pygame.time.get_ticks() // 1000, 2)
             if time_to_show >= 0 and self.show_text:

@@ -5,8 +5,9 @@ from dino_runner.components.dinosaurs import Dinosaurs
 from dino_runner.components.obstacles.obstacles_manager import ObstcacleManager
 from dino_runner.components.power_ups.powe_up_manager import PowerUpManager
 from dino_runner.utils.constants import BG, ICON, RUNNING, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS
-from dino_runner.utils.text_utils import  draw_message_componet
+from dino_runner.utils.text_utils import  FONT_SIZE, FONT_STYLE, draw_message_componet
 
+FONT_STYLE = 'freesansbold.ttf'
 
 class Game:
     def __init__(self):
@@ -40,6 +41,7 @@ class Game:
 
     def run(self):
         # Game loop: events - update - draw
+        #self.obstacle_manager.reset_update_scors()
         self.obstacle_manager.reset_obstacles()
         self.power_up_manager.reset_power_ups()
         self.playing = True
@@ -59,42 +61,37 @@ class Game:
     def update(self):
         self.update_score()
         user_input = pygame.key.get_pressed()
-        ##user_input = pygame.key.get_pressed()
+        #user_input = pygame.key.get_pressed()
         self.player.update(user_input)
         self.player.check_invencibility(self.screen)
         self.obstacle_manager.update(self)
         self.power_up_manager.update(self.points, self.game_speed, self.player)
     
-    #def update_score(self):
-        #self.points.reset.update_score()
-     #   number_of_points = True
-      #  while self.death_count > 0 :
-       #     self.draw_score()
-
-
+    def update_score(self):
+        #self.update_score()
+        number_of_points = True
+        while self.death_count > 0 :
+            self.draw_score()
      
-        #self.points += 1
-        #if self.points % 100 == 0:
-          #  self.game_speed += 20
-
-      
-
+        self.points += 1
+        if self.points % 100 == 0:
+           self.game_speed += 20
         
     def update_death(self):
         self.death_count += 1
         if self.death_count > 0:
             self.death_count()
         
-    ##def new_score(self):
-      #  if self.death_count > 0:
-       #     self.points += 1
-        #if self.points % 100 == 0:
-         #   self.game_speed += 20
+    def new_score(self):
+        if self.death_count > 0:
+           self.points += 1
+        if self.points % 100 == 0:
+            self.game_speed += 20
     
        # pass
     def draw(self):
         self.clock.tick(FPS)
-        self.screen.fill((255, 255, 255))
+        self.screen.fill((45, 45, 45))
         self.draw_score()
         self.draw_background()
         self.player.draw(self.screen)
@@ -116,7 +113,7 @@ class Game:
 
     def draw_score(self):
         draw_message_componet(
-            f'POINTS: {self.points}'
+            f'POINTS: {self.points}',
             self.screen,
             font_size = 22,
             pos_x_center = 1000,
@@ -130,7 +127,7 @@ class Game:
             #self.screen.blit(text, text_rect)  
 
     def new_text(self, font,size, message, widht, height):
-            font = pygame.font.Font( 22)#FONT STYLE
+            font = pygame.font.Font(FONT_SIZE)#FONT STYLE
             text = font.render(message, True, (0,0,0))
             text_rect = text.get_rect()
             text_rect.center = (widht, height)
@@ -148,7 +145,7 @@ class Game:
 
 
     def show_menu(self):
-        self.screen.fill((255, 255, 255))
+        self.screen.fill((42, 42, 42))
         half_screen_height = SCREEN_HEIGHT //2
         half_screen_width = SCREEN_WIDTH //2
         
@@ -158,17 +155,17 @@ class Game:
         elif self.death_count > 0:
             draw_message_componet('Press any key to splay again', self.screen)
             draw_message_componet(
-                f'POINTS: {self.points}'
+                f'POINTS: {self.points}',
                 self.screen,
                 pos_y_center = half_screen_height + 50
             
-            ):
+            )
             draw_message_componet(
-                f'NUMBER DEATHS: {self.death_count}'
+                f'NUMBER DEATHS: {self.death_count}',
                 self.screen,
                 pos_y_center = half_screen_height + 100
             
-            ):
+            )
             # puntos actuales y numero de muertes
         self.screen.blit(RUNNING[0], (half_screen_width - 20, half_screen_height -140))
 
