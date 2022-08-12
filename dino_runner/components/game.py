@@ -1,9 +1,12 @@
+from email import message
+from turtle import screensize
 import pygame
 from dino_runner.components.dinosaurs import Dinosaurs
 from dino_runner.components.obstacles.obstacles_manager import ObstcacleManager
-
+from dino_runner.components.power_ups.powe_up_manager import PowerUpManager
 from dino_runner.utils.constants import BG, ICON, RUNNING, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS
-FONT_STYLE = 'freesansbold.ttf'
+from dino_runner.utils.text_utils import  draw_message_componet
+
 
 class Game:
     def __init__(self):
@@ -14,6 +17,7 @@ class Game:
         self.clock = pygame.time.Clock()
         self.player = Dinosaurs()
         self.obstacle_manager = ObstcacleManager()
+        self.power_up_manager = PowerUpManager()
         self.playing = False
         self.running = False
         self.game_speed = 20
@@ -37,7 +41,10 @@ class Game:
     def run(self):
         # Game loop: events - update - draw
         self.obstacle_manager.reset_obstacles()
+        self.power_up_manager.reset_power_ups()
         self.playing = True
+        self.game_speed = 20
+        self.points = 0
         while self.playing:
             self.events()
             self.update()
@@ -54,7 +61,9 @@ class Game:
         user_input = pygame.key.get_pressed()
         ##user_input = pygame.key.get_pressed()
         self.player.update(user_input)
+        self.player.check_invencibility(self.screen)
         self.obstacle_manager.update(self)
+        self.power_up_manager.update(self.points, self.game_speed, self.player)
     
     #def update_score(self):
         #self.points.reset.update_score()
@@ -89,7 +98,9 @@ class Game:
         self.draw_score()
         self.draw_background()
         self.player.draw(self.screen)
+        self.player.check_invencibility(self.screen)
         self.obstacle_manager.draw(self.screen)
+        self.power_up_manager.draw(self.screen)
         pygame.display.update()
         pygame.display.flip()
 
@@ -102,12 +113,27 @@ class Game:
             self.x_pos_bg = 0
         self.x_pos_bg -= self.game_speed
 
+
     def draw_score(self):
-        if self.death_count == 0:
-            font = pygame.font.Font(FONT_STYLE, 22)
-            text = font.render(f'Points : {self.points}', True, (0,0,0))
+        draw_message_componet(
+            f'POINTS: {self.points}'
+            self.screen,
+            font_size = 22,
+            pos_x_center = 1000,
+            pos_y_center = 50
+
+        )
+           # font = pygame.font.Font(FONT_STYLE, 22)
+            #text = font.render(f'Points : {self.points}', True, (0,0,0))
+            #text_rect = text.get_rect()
+            #text_rect.center = (1000, 50)
+            #self.screen.blit(text, text_rect)  
+
+    def new_text(self, font,size, message, widht, height):
+            font = pygame.font.Font( 22)#FONT STYLE
+            text = font.render(message, True, (0,0,0))
             text_rect = text.get_rect()
-            text_rect.center = (1000, 50)
+            text_rect.center = (widht, height)
             self.screen.blit(text, text_rect)
 
 
@@ -128,47 +154,22 @@ class Game:
         
 
         if self.death_count == 0:
-            font = pygame.font.Font(FONT_STYLE, 22)
-            text = font.render('Press any key to start', True, (0,0,0))
-            text_rect = text.get_rect()
-            text_rect.center = (half_screen_width, half_screen_height)
-            self.screen.blit(text, text_rect)
-
+           draw_message_componet('Press any key to start', self.screen)
         elif self.death_count > 0:
-            font = pygame.font.Font(FONT_STYLE, 22)
-            text = font.render('Press any key to splay again', True, (0,0,0))
-            text_rect = text.get_rect()
-            text_rect.center = (half_screen_width, half_screen_height)
-            self.screen.blit(text, text_rect)
-        
-        if self.death_count > 0:
-            font = pygame.font.Font(FONT_STYLE, 22)
-            text = font.render(f'DEATH: {self.death_count}', True, (0,0,0))
-            text_rect = text.get_rect()
-            text_rect.center = (1000, 50)
-            self.screen.blit(text, text_rect)
-        
-        if self.death_count > 0:
-            font = pygame.font.Font(FONT_STYLE, 22)
-            text = font.render(f'Points : {self.points}', True, (0,0,0))
-            text_rect = text.get_rect()
-            text_rect.center = (1000, 80)
-            self.screen.blit(text, text_rect)
-
-        if self.death_count > 0:
-            font = pygame.font.Font(FONT_STYLE, 22)
-            text = font.render(f'Points : {self.points}', True, (0,0,0))
-            text_rect = text.get_rect()
-            text_rect.center = (1000, 80)
-            self.screen.blit(text, text_rect)
-
-        
-
-        
+            draw_message_componet('Press any key to splay again', self.screen)
+            draw_message_componet(
+                f'POINTS: {self.points}'
+                self.screen,
+                pos_y_center = half_screen_height + 50
+            
+            ):
+            draw_message_componet(
+                f'NUMBER DEATHS: {self.death_count}'
+                self.screen,
+                pos_y_center = half_screen_height + 100
+            
+            ):
             # puntos actuales y numero de muertes
-
-        
-
         self.screen.blit(RUNNING[0], (half_screen_width - 20, half_screen_height -140))
 
         pygame.display.update()
